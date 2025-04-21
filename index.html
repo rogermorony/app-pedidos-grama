@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedidos de Grama</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="logo.png" />
+</head>
+<body>
+  <!-- Splash Screen -->
+  <div id="splashScreen">
+    <img src="logo.png" alt="Logo" class="logo-splash" />
+  </div>
+
+  <!-- Tela de Login -->
+  <div id="loginContainer" style="display:none;">
+    <div class="login-box">
+      <img src="logo.png" class="logo" />
+      <h2>Digite o PIN para acessar</h2>
+      <input type="password" id="pinInput" placeholder="PIN de Acesso" inputmode="numeric" />
+      <button id="btnLogin">Entrar</button>
+      <p id="pinErro" style="color:red; display:none;">PIN incorreto</p>
+      <small class="versao-app">v1.0.170425 • Criado por Roger Martins</small>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div class="container" style="display: none">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h1 class="titulo-centralizado">Pedidos de Grama</h1>
+
+    <!-- Botão Dark Mode -->
+    <div class="switch-container">
+      <label class="switch">
+        <input type="checkbox" id="toggleDarkMode">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Tela Home -->
+    <div id="telaHome">
+      <form id="pedidoForm">
+        <input type="tel" id="data" placeholder="Data (DD/MM/AA)" required />
+        <input type="text" id="cliente" placeholder="Cliente" required />
+        <input type="tel" id="telefone" placeholder="Telefone" />
+        <input type="text" id="endereco" placeholder="Endereço" />
+        <select id="vendedor">
+          <option>Roger</option>
+          <option>Edinei</option>
+          <option>Vitória</option>
+          <option>Valceu</option>
+        </select>
+        <select id="fornecedor">
+          <option>Green Grass</option>
+          <option>Marquinhos</option>
+          <option>Leco</option>
+          <option>Jader</option>
+        </select>
+        <input type="tel" id="quantidade" placeholder="Quantidade (m²)" />
+        <input type="tel" id="valor" placeholder="Valor por m² (R$)" />
+        <textarea id="pedido" placeholder="Observações"></textarea>
+        <select id="status">
+          <option>Cobrar</option>
+          <option>Entregue</option>
+        </select>
+        <button type="submit" class="btn-principal" style="margin-bottom: 10px;">Adicionar Pedido</button>
+        <button id="verPedidos" class="btn-principal" style="width: 100%;">Ver Pedidos</button>
+      </form>
+    </div>
+
+    <!-- Tela Pedidos -->
+    <div id="telaPedidos" style="display: none">
+      <div class="top-bar">
+        <div class="botoes-superiores">
+          <button id="btnHome" class="btn-home">Início</button>
+          <button id="btnAbertos">Abertos</button>
+          <button id="btnEntregues">Entregues</button>
+          <button id="exportPdf">Exportar PDF</button>
+          <div class="menu-wrapper">
+            <button id="menuToggle">⋮</button>
+            <div id="menuOpcoes" class="menu-opcoes">
+              <button id="exportCsv">Exportar CSV</button>
+              <button id="salvarBackup">Salvar Backup</button>
+              <button id="restaurarBackup">Restaurar Backup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard -->
+      <div id="dashboardResumo">
+        <div class="resumo-box total">Total de Pedidos <span id="totalPedidos">0</span></div>
+        <div class="resumo-box entregue">Entregues <span id="totalEntregues">0</span></div>
+        <div class="resumo-box aberto">Em Aberto <span id="totalAbertos">0</span></div>
+        <div class="resumo-box valor">Valor Total <span id="valorTotalGeral">R$ 0,00</span></div>
+      </div>
+
+      <!-- Campo de busca -->
+      <div class="filtros">
+        <label for="campoBusca">Buscar:</label>
+        <input type="text" id="campoBusca" placeholder="Digite nome ou endereço..." />
+      </div>
+
+      <!-- Cards -->
+      <div class="cards-scroll-wrapper">
+        <div id="containerCards" class="cards-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        document.getElementById("splashScreen").style.display = "none";
+        document.getElementById("loginContainer").style.display = "flex";
+      }, 2000);
+
+      document.getElementById("toggleDarkMode").addEventListener("change", function () {
+        document.body.classList.toggle("dark-mode", this.checked);
+      });
+    });
+
+    document.getElementById("btnLogin").addEventListener("click", () => {
+      const pin = document.getElementById("pinInput").value;
+      if (pin === "1234") {
+        document.getElementById("loginContainer").style.display = "none";
+        document.querySelector(".container").style.display = "block";
+      } else {
+        document.getElementById("pinErro").style.display = "block";
+      }
+    });
+
+    document.getElementById("verPedidos").addEventListener("click", () => {
+      document.getElementById("telaHome").style.display = "none";
+      document.getElementById("telaPedidos").style.display = "block";
+    });
+
+    document.getElementById("btnHome").addEventListener("click", () => {
+      document.getElementById("telaPedidos").style.display = "none";
+      document.getElementById("telaHome").style.display = "block";
+    });
+  </script>
+</body>
+</html>
